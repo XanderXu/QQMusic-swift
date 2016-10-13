@@ -15,12 +15,12 @@ class QQLrcLabel: UILabel {
             setNeedsDisplay()
         }
     }
-    override func drawRect(rect: CGRect) {
-        super.drawRect(rect)
-        UIColor.greenColor().set()
+    override func draw(_ rect: CGRect) {
+        super.draw(rect)
+        UIColor.green.set()
         let progressFloat = CGFloat(progress)
         let fillRect = CGRect(x: rect.origin.x, y: rect.origin.y, width: rect.size.width * progressFloat, height: rect.size.height)
-        UIRectFillUsingBlendMode(fillRect, .SourceIn)
+        UIRectFillUsingBlendMode(fillRect, .sourceIn)
         
     }
 }

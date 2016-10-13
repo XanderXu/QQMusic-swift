@@ -11,8 +11,8 @@ import UIKit
 class QQMusicInfoModel: NSObject {
     //音乐模型
     var musicM : QQMusicModel?
-    var costTime : NSTimeInterval = 0
-    var totalTime : NSTimeInterval = 0
+    var costTime : TimeInterval = 0
+    var totalTime : TimeInterval = 0
     var costTimeFormat : String {
         get {
             return QQTimeTool.getFormatTime(costTime)

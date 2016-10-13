@@ -9,7 +9,7 @@
 import UIKit
 
 class QQLrcModel: NSObject {
-    var beginTime : NSTimeInterval = 0
-    var endTime : NSTimeInterval = 0
+    var beginTime : TimeInterval = 0
+    var endTime : TimeInterval = 0
     var lrcStr = ""
 }

@@ -9,17 +9,17 @@
 import UIKit
 
 class QQMusicDataTool: NSObject {
-    class func getMusicList(resultBlock : (musicModels : [QQMusicModel])->()) -> (){
+    class func getMusicList(_ resultBlock : (_ musicModels : [QQMusicModel])->()) -> (){
         //获取plist文件路径
-        guard let path = NSBundle.mainBundle().pathForResource("Musics.plist", ofType: nil, inDirectory: nil) else {
+        guard let path = Bundle.main.path(forResource: "Musics.plist", ofType: nil, inDirectory: nil) else {
             //不成功则调用block时,空数组
-            resultBlock(musicModels: [QQMusicModel]())
+            resultBlock([QQMusicModel]())
             return
         }
         //读取plist中的数组
         guard let dataArray = NSArray(contentsOfFile: path) else {
             //不成功则调用block时,空数组
-            resultBlock(musicModels: [QQMusicModel]())
+            resultBlock([QQMusicModel]())
             return
         }
         var tempArray = [QQMusicModel]()
@@ -28,6 +28,6 @@ class QQMusicDataTool: NSObject {
             tempArray.append(item)
         }
         //成功后,用模型数组调用block
-        resultBlock(musicModels: [QQMusicModel](tempArray))
+        resultBlock([QQMusicModel](tempArray))
     }
 }

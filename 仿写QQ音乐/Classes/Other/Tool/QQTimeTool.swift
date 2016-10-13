@@ -9,17 +9,17 @@
 import UIKit
 
 class QQTimeTool: NSObject {
-    class func getFormatTime(timeNum : NSTimeInterval) -> String {
+    class func getFormatTime(_ timeNum : TimeInterval) -> String {
         let min = Int(timeNum / 60)
-        let sec = Int(timeNum % 60)
+        let sec = Int(timeNum.truncatingRemainder(dividingBy: 60))
         let resultStr = String(format: "%02d:%02d", min, sec)
         return resultStr
     }
-    class func getTimeInterva(timeStr : String) -> NSTimeInterval {
-        let minAndSec = timeStr.componentsSeparatedByString(":")
+    class func getTimeInterva(_ timeStr : String) -> TimeInterval {
+        let minAndSec = timeStr.components(separatedBy: ":")
         if minAndSec.count == 2 {
-            let min = NSTimeInterval(minAndSec[0]) ?? 0
-            let sec = NSTimeInterval(minAndSec[1]) ?? 0
+            let min = TimeInterval(minAndSec[0]) ?? 0
+            let sec = TimeInterval(minAndSec[1]) ?? 0
             return min * 60 + sec
         }
         return 0

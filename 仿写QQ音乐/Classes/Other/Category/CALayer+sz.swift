@@ -13,7 +13,7 @@ extension CALayer {
     // 暂停动画
     func pauseAnimate()
     {
-        let pausedTime: CFTimeInterval = convertTime(CACurrentMediaTime(), fromLayer: nil)
+        let pausedTime: CFTimeInterval = convertTime(CACurrentMediaTime(), from: nil)
         speed = 0.0;
         timeOffset = pausedTime;
     }
@@ -25,7 +25,7 @@ extension CALayer {
         speed = 1.0;
         timeOffset = 0.0;
         beginTime = 0.0;
-        let timeSincePause: CFTimeInterval = convertTime(CACurrentMediaTime(), fromLayer: nil) - pausedTime
+        let timeSincePause: CFTimeInterval = convertTime(CACurrentMediaTime(), from: nil) - pausedTime
         beginTime = timeSincePause;
     }
 

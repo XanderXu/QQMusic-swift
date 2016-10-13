@@ -10,7 +10,7 @@ import UIKit
 
 class QQLrcDataTool: NSObject {
     //根据歌词数组和当前播放进度,得到行号和当前这一句歌词
-    class func getRowAndLrcM(costTime : NSTimeInterval, lrcModels : [QQLrcModel]) ->(row : Int, lrcM : QQLrcModel) {
+    class func getRowAndLrcM(_ costTime : TimeInterval, lrcModels : [QQLrcModel]) ->(row : Int, lrcM : QQLrcModel) {
         let count = lrcModels.count
         //根据时间判断是哪一句歌词
         for i in 0..<count {
@@ -24,9 +24,9 @@ class QQLrcDataTool: NSObject {
     }
     
     //根据lrc歌词文件的路径,得到歌词模型
-    class func getLrcModels(lrcName : String?) -> [QQLrcModel] {
+    class func getLrcModels(_ lrcName : String?) -> [QQLrcModel] {
         //读取歌词文件路径
-        guard let path = NSBundle.mainBundle().pathForResource(lrcName, ofType: nil) else {
+        guard let path = Bundle.main.path(forResource: lrcName, ofType: nil) else {
             return [QQLrcModel]() //不成功返回空的模型数组
         }
         var lrc = ""
@@ -37,19 +37,19 @@ class QQLrcDataTool: NSObject {
             return [QQLrcModel]()//不成功返回空的模型数组
         }
         //将歌词字符串转换为数组
-        let lrcArray = lrc.componentsSeparatedByString("\n")
+        let lrcArray = lrc.components(separatedBy: "\n")
         var lrcModels = [QQLrcModel]()
         for lrcStr in lrcArray {
             //处理开头的额外数据
-            if lrcStr.containsString("[ti:") || lrcStr.containsString("[ar:") || lrcStr.containsString("[al:") {
+            if lrcStr.contains("[ti:") || lrcStr.contains("[ar:") || lrcStr.contains("[al:") {
                 continue
             }
             //创建模型,将单句歌词添加到数组
             let lrcModel = QQLrcModel()
             lrcModels.append(lrcModel)
             //将每一句的时间和歌词分开
-            let tempStr = lrcStr.stringByReplacingOccurrencesOfString("[", withString: "")
-            let timeAndLrc = tempStr.componentsSeparatedByString("]")
+            let tempStr = lrcStr.replacingOccurrences(of: "[", with: "")
+            let timeAndLrc = tempStr.components(separatedBy: "]")
             if timeAndLrc.count == 2 {
                 let timeStr = timeAndLrc[0]
                 //起始时间

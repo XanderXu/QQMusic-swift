@@ -23,8 +23,8 @@ class QQMusicTool: NSObject {
         }
     }
     var player : AVAudioPlayer?
-    func playMusic(name : String) -> () {
-        guard let url = NSBundle.mainBundle().URLForResource(name, withExtension: nil) else {
+    func playMusic(_ name : String) -> () {
+        guard let url = Bundle.main.url(forResource: name, withExtension: nil) else {
             return
         }
         //和正在播放的url相同,则继续播放
@@ -34,7 +34,7 @@ class QQMusicTool: NSObject {
         }
         //不一样播放新歌曲
         do {
-            player = try AVAudioPlayer(contentsOfURL: url)
+            player = try AVAudioPlayer(contentsOf: url)
         }catch {
             print(error)
             return
@@ -49,13 +49,13 @@ class QQMusicTool: NSObject {
     func resumeCurrentMusic() -> () {
         player?.play()
     }
-    func seekTo(interval : NSTimeInterval) -> () {
+    func seekTo(_ interval : TimeInterval) -> () {
         player?.currentTime = interval
     }
 }
 ///代理方法,一曲播放完毕发通知
 extension QQMusicTool : AVAudioPlayerDelegate{
-    func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
-        NSNotificationCenter.defaultCenter().postNotificationName(kPlayerDidFinishPlaying, object: nil)
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        NotificationCenter.default.post(name: Notification.Name(rawValue: kPlayerDidFinishPlaying), object: nil)
     }
 }

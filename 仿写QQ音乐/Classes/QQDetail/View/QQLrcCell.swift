@@ -21,11 +21,11 @@ class QQLrcCell: UITableViewCell {
             lrcLabel.text = lrcStr
         }
     }
-    class func cellWithTableView(tableView : UITableView) -> QQLrcCell {
+    class func cellWithTableView(_ tableView : UITableView) -> QQLrcCell {
         let ID = "lrcCell"
-        var cell = tableView.dequeueReusableCellWithIdentifier(ID) as? QQLrcCell
+        var cell = tableView.dequeueReusableCell(withIdentifier: ID) as? QQLrcCell
         if cell == nil {
-            cell = NSBundle.mainBundle().loadNibNamed("QQLrcCell", owner: nil, options: nil).first as? QQLrcCell
+            cell = Bundle.main.loadNibNamed("QQLrcCell", owner: nil, options: nil)?.first as? QQLrcCell
         }
         return cell!
     }
@@ -35,7 +35,7 @@ class QQLrcCell: UITableViewCell {
         // Initialization code
     }
 
-    override func setSelected(selected: Bool, animated: Bool) {
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state

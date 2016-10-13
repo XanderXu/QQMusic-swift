@@ -9,7 +9,7 @@
 import UIKit
 
 class QQDetailViewController: UIViewController {
-    var timer : NSTimer?
+    var timer : Timer?
     var displayLink : CADisplayLink?
     lazy var lrcTVC : QQLrcTableViewController = {
         let lrcTVC = QQLrcTableViewController()
@@ -32,20 +32,20 @@ class QQDetailViewController: UIViewController {
         super.viewDidLoad()
         
         setupOnce()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(nextBtnClick(_:)), name: kPlayerDidFinishPlaying, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(nextBtnClick(_:)), name: NSNotification.Name(rawValue: kPlayerDidFinishPlaying), object: nil)
     }
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         setupFrame()
     }
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupDataOnce()
         setupDataTimes()
         addSecondTimer()
         addDisplayLink()
     }
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         removeTimer()
         removeDisplayLink()
     }
@@ -59,9 +59,9 @@ class QQDetailViewController: UIViewController {
 //界面点击,滑动事件处理
 extension QQDetailViewController {
     //播放暂停
-    @IBAction func playPauseBtnClick(sender: UIButton) {
-        sender.selected = !sender.selected
-        if sender.selected == true {
+    @IBAction func playPauseBtnClick(_ sender: UIButton) {
+        sender.isSelected = !sender.isSelected
+        if sender.isSelected == true {
             QQMusicOperationTool.shareInstance.pauseCurrentMusic()
             pauseRotationAnimation()
         } else {
@@ -70,29 +70,30 @@ extension QQDetailViewController {
         }
     }
     //上一首
-    @IBAction func preBtnClick(sender: AnyObject) {
+    @IBAction func preBtnClick(_ sender: AnyObject) {
         QQMusicOperationTool.shareInstance.preMusic()
         setupDataOnce()
     }
     //下一首
-    @IBAction func nextBtnClick(sender: AnyObject) {
+    @IBAction func nextBtnClick(_ sender: AnyObject) {
         QQMusicOperationTool.shareInstance.nextMusic()
         setupDataOnce()
     }
     //返回
-    @IBAction func backToListBtnClick(sender: AnyObject) {
-        navigationController?.popViewControllerAnimated(true)
+    @IBAction func backToListBtnClick(_ sender: AnyObject) {
+        
+        navigationController?.popViewController(animated: true)
     }
     //进度条拖动
-    @IBAction func sliderChange(sender: UISlider) {
+    @IBAction func sliderChange(_ sender: UISlider) {
         let totalTime = QQMusicOperationTool.shareInstance.getNewMusicInfoModel().totalTime
         let currentTime = Double(sender.value) * totalTime
         currentTimeLabel.text = QQTimeTool.getFormatTime(currentTime)
         QQMusicOperationTool.shareInstance.seekTo(currentTime)
     }
     
-    func sliderTap(tap : UIGestureRecognizer) -> () {
-        let point = tap.locationInView(progressSlider)
+    func sliderTap(_ tap : UIGestureRecognizer) -> () {
+        let point = tap.location(in: progressSlider)
         let value = point.x / progressSlider.width
         progressSlider.value = Float(value)
         let totalTime = QQMusicOperationTool.shareInstance.getNewMusicInfoModel().totalTime
@@ -105,13 +106,13 @@ extension QQDetailViewController {
 extension QQDetailViewController {
     func setupOnce() -> () {
         //歌词tableView
-        lrcTVC.tableView.backgroundColor = UIColor.clearColor()
+        lrcTVC.tableView.backgroundColor = UIColor.clear
         lrcScrollView.addSubview(lrcTVC.tableView)
-        lrcScrollView.pagingEnabled = true
+        lrcScrollView.isPagingEnabled = true
         lrcScrollView.showsHorizontalScrollIndicator = false
         lrcScrollView.delegate = self
         //进度slider
-        progressSlider.setThumbImage(UIImage(named: "player_slider_playback_thumb"), forState: .Normal)
+        progressSlider.setThumbImage(UIImage(named: "player_slider_playback_thumb"), for: UIControlState())
         let tap = UITapGestureRecognizer(target: self, action: #selector(sliderTap(_:)))
         progressSlider.addGestureRecognizer(tap)
         
@@ -171,12 +172,12 @@ extension QQDetailViewController {
         
     }
     func addSecondTimer() -> () {
-        timer = NSTimer(timeInterval: 1, target: self, selector: #selector(setupDataTimes), userInfo: nil, repeats: true)
-        NSRunLoop.currentRunLoop().addTimer(timer!, forMode: NSRunLoopCommonModes)
+        timer = Timer(timeInterval: 1, target: self, selector: #selector(setupDataTimes), userInfo: nil, repeats: true)
+        RunLoop.current.add(timer!, forMode: RunLoopMode.commonModes)
     }
     func addDisplayLink() -> () {
         displayLink = CADisplayLink(target: self, selector: #selector(updateLrc))
-        displayLink?.addToRunLoop(NSRunLoop.currentRunLoop(), forMode: NSRunLoopCommonModes)
+        displayLink?.add(to: RunLoop.current, forMode: RunLoopMode.commonModes)
     }
     func removeTimer() -> () {
         timer?.invalidate()
@@ -188,15 +189,15 @@ extension QQDetailViewController {
     }
     func addRotationAnimation() -> () {
         //前景图片旋转
-        foregroundImageView.layer.removeAnimationForKey("rotation")
+        foregroundImageView.layer.removeAnimation(forKey: "rotation")
         let animation = CABasicAnimation(keyPath: "transform.rotation.z")
         animation.duration = 30
         animation.fromValue = 0
         animation.toValue = 2 * M_PI
         animation.repeatCount = MAXFLOAT
         //播放完成或者返回主页后不移除
-        animation.removedOnCompletion = false
-        foregroundImageView.layer.addAnimation(animation, forKey: "rotation")
+        animation.isRemovedOnCompletion = false
+        foregroundImageView.layer.add(animation, forKey: "rotation")
     }
     func resumeRotationAnimation() -> () {
         foregroundImageView.layer.resumeAnimate()
@@ -204,12 +205,12 @@ extension QQDetailViewController {
     func pauseRotationAnimation() -> () {
         foregroundImageView.layer.pauseAnimate()
     }
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return .LightContent
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return .lightContent
     }
 }
 extension QQDetailViewController : UIScrollViewDelegate {
-    func scrollViewDidScroll(scrollView: UIScrollView) {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let alpha = 1 - scrollView.contentOffset.x / lrcScrollView.width
         foregroundImageView.alpha = alpha
         lrcLabel.alpha = alpha

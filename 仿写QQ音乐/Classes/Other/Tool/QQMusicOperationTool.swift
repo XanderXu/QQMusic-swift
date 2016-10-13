@@ -29,10 +29,10 @@ class QQMusicOperationTool: NSObject {
         }
     }
     //按模型播放
-    func playMusic(musicM : QQMusicModel) -> () {
+    func playMusic(_ musicM : QQMusicModel) -> () {
         let fileName = musicM.filename ?? ""
         tool.playMusic(fileName)
-        index = (musicMList?.indexOf(musicM)) ?? 0//获取当前歌曲模型在播放列表中的位置
+        index = (musicMList?.index(of: musicM)) ?? 0//获取当前歌曲模型在播放列表中的位置
         if musicMList == nil {
             print("没有播放列表,只能播放一首歌曲")
             return
@@ -63,12 +63,12 @@ class QQMusicOperationTool: NSObject {
         }
     }
     //跳转到
-    func seekTo(interval : NSTimeInterval) -> () {
+    func seekTo(_ interval : TimeInterval) -> () {
         tool.seekTo(interval)
     }
     //私有变量
-    private var musicInfoModel = QQMusicInfoModel()
-    private var artwork : MPMediaItemArtwork?
+    fileprivate var musicInfoModel = QQMusicInfoModel()
+    fileprivate var artwork : MPMediaItemArtwork?
 }
 extension QQMusicOperationTool {
     ///当前歌曲的详情模型
@@ -76,7 +76,7 @@ extension QQMusicOperationTool {
         musicInfoModel.musicM = musicMList?[index]
         musicInfoModel.costTime = tool.player?.currentTime ?? 0
         musicInfoModel.totalTime = tool.player?.duration ?? 0
-        musicInfoModel.isPlaying = tool.player?.playing ?? false
+        musicInfoModel.isPlaying = tool.player?.isPlaying ?? false
         return musicInfoModel
     }
 }
